@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layout/main.html"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<div class="container mt-3" layout:fragment="content">
+
+    <div id="carouselExampleIndicators" class="carousel slide">
+        <div class="carousel-inner " id="car">
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <div class="carousel slide" id="genresCarousel">
+        <div class="carousel-inner " id="genreButtons">
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#genresCarousel"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#genresCarousel"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <div class="card text-center">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="navigationTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-tab-id="tab1" href="#">Tab 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-tab-id="tab2" href="#">Tab 2</a>
+                </li>
+                <!-- Добавьте остальные вкладки по аналогии -->
+            </ul>
+        </div>
+        <div class="card-body">
+            <!-- Сюда будет загружаться содержимое соответствующее выбранной вкладке -->
+            <div id="tabContent"></div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <script>
+        loadProducts();
+        loadAllProductsByGenre();
+        loadTabContent();
+        /*getProductsByGenre();*/
+
+        // addEventListener();
+
+        function loadProducts() {
+            const request = new XMLHttpRequest();
+            request.onload = (e) => {
+                let products = JSON.parse(request.responseText);
+                carouselSlideHTML = "";
+                for (let i = 0; i < products.length; i++) {
+                    if (i == 0) {
+                        carouselSlideHTML += "<div class='carousel-item active ' onclick='redirectToDetails(" + products[i].id + ")'>";
+                    } else {
+                        carouselSlideHTML += "<div class='carousel-item' onclick='redirectToDetails(" + products[i].id + ")'>";
+                    }
+                    carouselSlideHTML += "<div class='d-flex'>";
+                    carouselSlideHTML += "<div class='w-75'>"
+                    carouselSlideHTML += "<img src='" + products[i].photo + "' class='d-block w-100'>";
+                    carouselSlideHTML += "</div>";
+                    carouselSlideHTML += "<div class='w-25 bg-secondary'>";
+                    carouselSlideHTML += "<div class='card'>";
+                    carouselSlideHTML += "<h5 class='card-header'>" + products[i].name + "</h5>";
+                    carouselSlideHTML += "<div class='card-body'>";
+                    carouselSlideHTML += "<h5 class='card-title'>" + products[i].price + "</h5>";
+                    carouselSlideHTML += "</div>";
+                    carouselSlideHTML += "</div>";
+                    carouselSlideHTML += "</div>";
+                    carouselSlideHTML += "</div>";
+                    carouselSlideHTML += "</div>";
+
+                }
+                car.innerHTML = carouselSlideHTML;
+            }
+            request.open("GET", "/product");
+            request.send();
+        }
+
+        function redirectToDetails(productId) {
+            window.location.href = "/steam/detailsProduct/" + productId;
+        }
+
+
+
+        function loadAllProductsByGenre() {
+            const request = new XMLHttpRequest();
+            request.onload = (e) => {
+                let genres = JSON.parse(request.responseText);
+                let genreButtonsHTML = "";
+                for (let i = 0; i < genres.length; i++) {
+                    if (i == 0) {
+                        genreButtonsHTML += "<button class='carousel-item active btn btn-primary' onclick='getProductsByGenre(" + genres[i].id + ")'>" + genres[i].genreName + "</button>";
+                    } else {
+                        genreButtonsHTML += "<button class='carousel-item btn btn-primary' onclick='getProductsByGenre(" + genres[i].id + ")'>" + genres[i].genreName + "</button>";
+                    }
+
+
+                }
+                genreButtons.innerHTML = genreButtonsHTML;
+            }
+            request.open("GET", "/genres");
+            request.send();
+        }
+
+        function getProductsByGenre(genreId) {
+            window.location.href = "/steam/product/findProducts/" + genreId;
+        }
+
+
+        function loadTabContent() {
+            const request = new XMLHttpRequest();
+            request.onload = (e) => {
+                let productTable = JSON.parse(request.responseText);
+                let productTableHTML = "<table class='table'><thead><tr><th scope='col'>Name</th><th scope='col'>Description</th><th scope='col'>Price</th></tr></thead><tbody>";
+
+                productTable.forEach(function(product) {
+                    productTableHTML += "<tr>";
+                    productTableHTML += "<td>" + product.name + "</td>";
+                    productTableHTML += "<td>" + product.description + "</td>";
+                    productTableHTML += "<td>" + product.price + "</td>";
+                    productTableHTML += "</tr>";
+                });
+
+                productTableHTML += "</tbody></table>";
+                document.getElementById("tabContent").innerHTML = productTableHTML;
+            };
+
+            request.open("GET", "/product");
+            request.send();
+        }
+
+
+        /*function loadAllProductsByGenre() {
+            const request = new XMLHttpRequest();
+            request.onload = (e) => {
+                let genres = JSON.parse(request.responseText);
+                let genreButtonsHTML = "";
+                genres.forEach((genre, index) => {
+                    genreButtonsHTML += `<button class="carousel-item ${index === 0 ? 'active' : ''} btn btn-primary" onclick="getProductsByGenre(${genre.id})">${genre.name}</button>`;
+                });
+                document.getElementById("genreButtons").innerHTML = genreButtonsHTML;
+            };
+            request.open("GET", "/genres");
+            request.send();
+        }
+
+        function getProductsByGenre(genreId) {
+            const request = new XMLHttpRequest();
+            request.onload = (e) => {
+                let products = JSON.parse(request.responseText);
+                let productTableHTML = "<table class='table'><thead><tr><th scope='col'>Name</th><th scope='col'>Description</th><th scope='col'>Price</th></tr></thead><tbody>";
+                products.forEach((product) => {
+                    productTableHTML += "<tr>";
+                    productTableHTML += `<td>${product.name}</td>`;
+                    productTableHTML += `<td>${product.description}</td>`;
+                    productTableHTML += `<td>${product.price}</td>`;
+                    productTableHTML += "</tr>";
+                });
+                productTableHTML += "</tbody></table>";
+                document.getElementById("tabContent").innerHTML = productTableHTML;
+            };
+            request.open("GET", "/steam/product/findProducts/" + genreId);
+            request.send();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var genresList = document.getElementById("genres-list");
+
+            fetch("/genres")
+                .then(response => response.json())
+                .then(data => {
+                    var genresHTML = "<ul>";
+                    data.forEach(genre => {
+                        genresHTML += "<li>" + genre.name + "</li>";
+                    });
+                    genresHTML += "</ul>";
+                    genresList.innerHTML = genresHTML;
+                })
+                .catch(error => console.error('Error fetching genres:', error));
+        });*/
+
+    </script>
+
+</div>
+
+
+</html>

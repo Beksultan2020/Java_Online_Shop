@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
+    <title>Title</title>
+    <style>
+        /* Цветовая палитра, аналогичная Steam */
+        body {
+            background-color: #1b2838; /* Основной цвет фона */
+            color: #cdd2d5; /* Цвет текста */
+        }
+
+        .bg-primary {
+            background-color: #171a21 !important; /* Цвет фона навигационной панели */
+            border-color: #171a21 !important; /* Цвет границ навигационной панели */
+        }
+
+        .navbar-nav .nav-link {
+            color: #cdd2d5 !important; /* Цвет текста ссылок в навигационной панели */
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #66c0f4 !important; /* Цвет текста ссылок в навигационной панели при наведении */
+        }
+
+        .btn-outline-success {
+            color: #66c0f4; /* Цвет текста кнопок */
+            border-color: #66c0f4; /* Цвет границ кнопок */
+        }
+
+        .btn-outline-success:hover {
+            color: #171a21; /* Цвет текста кнопок при наведении */
+            background-color: #66c0f4; /* Цвет фона кнопок при наведении */
+            border-color: #66c0f4; /* Цвет границ кнопок при наведении */
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #66c0f4; /* Цвет стрелок управления каруселью */
+        }
+
+        /* Здесь могут быть дополнительные стили для вашего проекта */
+    </style>
+</head>
+<body>
+
+<nav style="width: 1600px" class="navbar navbar-expand-lg bg-primary m-auto">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{'/steam/'}">Steam</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{'/steam/'}">Home</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{'/steam/sign_in'}">Sign IN</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{'/steam/register'}">Register</a>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <span th:text="${#authentication.principal.fullName}"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{'/steam/profile'}">Profile</a></li>
+                        <li sec:authorize="hasAuthority('ROLE_ADMIN')"><a class="dropdown-item"
+                                                                          th:href="@{'/steam/adminPanel'}">Admin Panel</a>
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{'/steam/settings'}">Settings</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{'/steam/logout'}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div style="width: 1600px;" class="container mt-3 m-auto">
+    <div class="row">
+        <div class="col">
+            <div class="container" layout:fragment="content"></div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
