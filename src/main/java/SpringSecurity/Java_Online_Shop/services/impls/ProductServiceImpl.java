@@ -43,12 +43,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        if (product == null) {
-            return null;
+    public Product updateProduct(Long id,Product product) {
+        if (productRepository.existsById(id)){
+            product.setId(id);
+           return productRepository.save(product);
+        } else {
+            throw new RuntimeException("Такого продукта не существует по данному id: "+id);
         }
-
-        return productRepository.save(product);
     }
 
     @Override

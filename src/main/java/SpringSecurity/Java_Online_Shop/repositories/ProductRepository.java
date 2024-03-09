@@ -20,5 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllByOrderByNameDesc();
 
+    boolean existsById(Long id);
+
     //todo
 }
