@@ -23,5 +23,5 @@ public interface ProductService {
 
     /*List<Product> searchProduct*/
 
-    double calculateAverageMark(Long productId);
+//    double calculateAverageMark(Long productId);
 }

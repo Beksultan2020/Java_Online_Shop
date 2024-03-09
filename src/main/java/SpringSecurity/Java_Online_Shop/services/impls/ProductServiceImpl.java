@@ -78,10 +78,10 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    public double calculateAverageMark(Long productId) {
-        List<Comment> comments=commentRepository.findAllB;
-    }
+//    @Override
+//    public double calculateAverageMark(Long productId) {
+//        List<Comment> comments=commentRepository.findAllById(productId);
+//    }
 
     /*@Override
     public String calculateMark(Integer mark) {
